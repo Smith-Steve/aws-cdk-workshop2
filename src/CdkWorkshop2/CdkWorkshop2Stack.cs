@@ -4,6 +4,7 @@ using Amazon.CDK.AWS.SNS.Subscriptions;
 using Amazon.CDK.AWS.APIGateway;
 using Amazon.CDK.AWS.Lambda;
 using Amazon.CDK.AWS.SQS;
+using Cdklabs.DynamoTableViewer;
 using Constructs;
 using System;
 using System.Reflection.Metadata.Ecma335;
@@ -33,6 +34,13 @@ namespace CdkWorkshop2
             {
                 Handler = helloWithCounter.Handler
             });
+
+            new TableViewer(this, "ViewerHitCount", new TableViewerProps
+            {
+                Title = "Hello Hits",
+                Table = helloWithCounter.MyTable
+            });
+
         }
     }
 }

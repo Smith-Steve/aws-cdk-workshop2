@@ -15,6 +15,7 @@ namespace CdkWorkshop2
     public class HitCounter : Construct
     {
         public Function Handler { get; }
+        public readonly Table MyTable;
 
         public HitCounter(Construct scope, string id, HitCounterProps props) : base(scope,id)
         {
@@ -30,6 +31,7 @@ namespace CdkWorkshop2
                     Type = AttributeType.STRING
                 }
             });
+            MyTable = table;
 
             //This is our Lambda function.
             // - Here we are 'binding' the lambda to the 'lambda' directory, and the handler code. Below we will specify where each is performed.
