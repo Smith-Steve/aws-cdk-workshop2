@@ -12,20 +12,26 @@ namespace CdkWorkshop2
 {
     public class CdkWorkshop2Stack : Stack
     {
-        internal CdkWorkshop2Stack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
+        public CdkWorkshop2Stack(Construct scope, string id, IStackProps props = null) : base(scope, id, props)
         {
             //Here we are defining a new lambda resource.
             var hello = new Function(this, "HelloHandler", new FunctionProps
             {
-                Runtime = Runtime.NODEJS_16_X,
-                Code = Code.FromAsset("lambda"), //Code to be loaded from the 'lambda' folder.
-                Handler = "hello.handler"
+                Runtime = Runtime.NODEJS_16_X, // execution environment
+                Code = Code.FromAsset("lambda"), // Code loaded from the "lambda" directory
+                Handler = "hello.handler" // file is "hello", function is "handler"
+            });
+
+            //
+            var helloWithCounter = new HitCounter(this, "HelloHitCounter", new HitCounterProps
+            {
+                Downstream = hello
             });
 
             //Here we are defining an API Gateway REST API resource backed by our "Hello" function.
             new LambdaRestApi(this, "Endpoint", new LambdaRestApiProps
             {
-                Handler = hello
+                Handler = helloWithCounter.Handler
             });
         }
     }

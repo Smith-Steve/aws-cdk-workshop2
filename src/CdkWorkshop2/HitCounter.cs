@@ -1,21 +1,22 @@
 using Amazon.CDK;
+using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.Lambda;
 using Constructs;
+using System.Collections.Generic;
 
 namespace CdkWorkshop2
 {
     public class HitCounterProps
     {
-        //The function for which we want to count url hits.
+        // The function for which we want to count url hits
         public IFunction Downstream { get; set; }
     }
 
     public class HitCounter : Construct
     {
-
         public Function Handler { get; }
 
-        public HitCounter(Construct scope, string id, HitCounterProps props) : base(scope,id
+        public HitCounter(Construct scope, string id, HitCounterProps props) : base(scope,id)
         {
             //We're defining the AWS Lambda Function and the DynamoDB table in our 'HitCounter' construct.
 
@@ -26,16 +27,16 @@ namespace CdkWorkshop2
                 PartitionKey = new Attribute
                 {
                     Name = "path",
-                    Type = AttributeType.String
+                    Type = AttributeType.STRING
                 }
             });
 
             //This is our Lambda function.
             // - Here we are 'binding' the lambda to the 'lambda' directory, and the handler code. Below we will specify where each is performed.
 
-            Handler = new Function(this, "HitCounterHanlder", new FunctionProps
+            Handler = new Function(this, "HitCounterHandler", new FunctionProps
             {
-                Runutime = Runtime.NODEJS_16_X,
+                Runtime = Runtime.NODEJS_16_X,
                 Handler = "hitcounter.handler", // We are naming our 'handler' function within the folder.
                 Code = Code.FromAsset("lambda"), //This is where we are binding the code to the proper directory 'lambda'
                 Environment = new Dictionary<string, string>
@@ -52,7 +53,9 @@ namespace CdkWorkshop2
                 }
             });
 
+            table.GrantReadWriteData(Handler);
 
+            props.Downstream.GrantInvoke(Handler);
         }
     }
 
