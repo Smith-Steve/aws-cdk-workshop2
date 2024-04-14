@@ -29,7 +29,8 @@ namespace CdkWorkshop2
                 {
                     Name = "path",
                     Type = AttributeType.STRING
-                }
+                },
+                RemovalPolicy = RemovalPolicy.DESTROY
             });
             MyTable = table;
 
